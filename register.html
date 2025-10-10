@@ -44,13 +44,7 @@
     // Importando o Firebase e configurando o app
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { addDoc, collection } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-    addDoc(collection(db, "logs_acessos"), {
-      timestamp: new Date(),
-      userId: auth.currentUser ? auth.currentUser.uid : null,
-      navegador: navigator.userAgent
-    });
+    
     // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDmmt1wbET6-dcvdsBGXW9j8Pm-S9N4kcs",

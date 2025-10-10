@@ -399,27 +399,52 @@ document.getElementById("saveProductBtn").onclick=async()=>{
   } catch(e){ alert("Erro ao salvar produto: "+e.message); }
 };
 
-loginSubmitBtn.onclick=async()=>{
-  const mail=loginEmail.value.trim();
-  const pass=loginPassword.value.trim();
-  if(!mail||!pass){ showLoginAlert("Preencha todos os campos!","warning"); return; }
-  try{ 
-    await signInWithEmailAndPassword(auth,mail,pass); 
-    loginModal.hide(); 
+loginSubmitBtn.onclick = async () => {
+  const mail = loginEmail.value.trim();
+  const pass = loginPassword.value.trim();
+  if (!mail || !pass) { showLoginAlert("Preencha todos os campos!", "warning"); return; }
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, mail, pass);
+    // login bem-sucedido
+    console.log("Login ok:", userCredential.user);
+    loginModal.hide();
     loginEmail.value = '';
     loginPassword.value = '';
-    loginAlert.style.display="none";
-  } 
-  catch(e){ showLoginAlert("Erro: "+e.message); }
+    loginAlert.style.display = "none";
+  } catch (e) {
+    // debug no console
+    console.error("Erro no signIn:", e, "code:", e.code, "message:", e.message);
+
+    // mensagens amigáveis por código de erro
+    let friendly = "Erro ao tentar entrar. Verifique seu email e senha.";
+    if (e.code === "auth/invalid-email") friendly = "Email inválido. Verifique o formato do email.";
+    else if (e.code === "auth/user-not-found") friendly = "Conta não encontrada. Verifique o email ou crie uma conta.";
+    else if (e.code === "auth/wrong-password") friendly = "Senha incorreta.";
+    else if (e.code === "auth/too-many-requests") friendly = "Muitas tentativas. Tente novamente mais tarde.";
+    else if (e.code === "auth/network-request-failed") friendly = "Erro de rede. Verifique sua conexão.";
+    else if (e.code === "auth/operation-not-allowed") friendly = "Método de login não permitido. Ative Email/Password no Firebase.";
+    else if (e.code === "auth/invalid" || e.code === "auth/invalid-credential") friendly = "Credenciais inválidas. Verifique a configuração do Firebase.";
+
+    showLoginAlert(friendly, "danger");
+  }
 };
 
-onAuthStateChanged(auth,user=>{ 
-  isLoggedIn=!!user; 
+onAuthStateChanged(auth, user => {
+  isLoggedIn = !!user;
   currentUserId = user?.uid || null;
-  updateLoginStatus(); 
-  loadProducts(); 
-  renderCart(); 
+
+  if (isLoggedIn) {
+    addProductBtn.classList.remove("d-none");
+  } else {
+    addProductBtn.classList.add("d-none");
+  }
+
+  updateLoginStatus();
+  loadProducts();
+  renderCart();
 });
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

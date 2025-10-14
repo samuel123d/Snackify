@@ -415,7 +415,7 @@ function createProductCard(p) {
   const info=document.createElement("div"); info.className="text-muted mb-2"; 
   
   const tamanhosArray = Array.isArray(p.tamanhos) ? p.tamanhos : (typeof p.tamanhos === 'string' ? p.tamanhos.split(',') : ['P','M','G']);
-  info.textContent="Tamanhos: "+tamanhosArray.join(",");
+  info.textContent="Tamanho: "+tamanhosArray.join(",");
   
   const footer=document.createElement("div"); footer.className="mt-auto d-flex flex-column align-items-start";
   const priceSpan=document.createElement("span"); priceSpan.textContent=`R$ ${(p.preco||0).toFixed(2)}`;

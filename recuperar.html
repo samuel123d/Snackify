@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recuperar Senha - Snackify</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-light">
+
+  <div class="card text-center shadow p-3 position-absolute top-50 start-50 translate-middle" style="width: 25rem;">
+    <div class="card-header fw-bold fs-4">
+      Recuperar Senha
+    </div>
+
+    <div class="card-body">
+
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="email" placeholder="name@example.com">
+        <label for="email">Email cadastrado</label>
+      </div>
+
+      <button id="resetBtn" class="btn btn-primary w-100 mb-2">
+        Enviar link de recuperação
+      </button>
+
+      <button id="backBtn" class="btn btn-outline-secondary w-100">
+        Voltar
+      </button>
+
+      <div id="alertBox" class="mt-3" style="display:none;"></div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDmmt1wbET6-dcvdsBGXW9j8Pm-S9N4kcs",
+      authDomain: "lerning-project-4762d.firebaseapp.com",
+      projectId: "lerning-project-4762d",
+      storageBucket: "lerning-project-4762d.appspot.com",
+      messagingSenderId: "45818309485",
+      appId: "1:45818309485:web:e5ef5b9532c6e7d2754864"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const email = document.getElementById("email");
+    const resetBtn = document.getElementById("resetBtn");
+    const backBtn = document.getElementById("backBtn");
+    const alertBox = document.getElementById("alertBox");
+
+    function showAlert(msg, type = "danger") {
+      alertBox.style.display = "block";
+      alertBox.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show">
+          ${msg}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>`;
+    }
+
+    resetBtn.addEventListener("click", async () => {
+      const mail = email.value.trim();
+
+      if (!mail) {
+        showAlert("Informe seu email!", "warning");
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, mail);
+        showAlert("Email de recuperação enviado com sucesso!", "success");
+      } catch (e) {
+        console.error(e);
+        showAlert("Erro ao enviar email: " + e.message, "danger");
+      }
+    });
+
+    backBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
